@@ -14,6 +14,7 @@ app.init = function () {
 };
 
 app.fetch = function (room) {
+  console.log("before the ajax fetch");
   $.ajax({
     url: app.server + 'classes/messages',
     type: 'GET',
@@ -22,8 +23,10 @@ app.fetch = function (room) {
       where: { "roomname": room }
     },
     success: function (data) {
+      console.log("unparsed from server :", data);
       var data = JSON.parse(data);
       app.messages = data.results;
+      console.log(data);
     },
     complete: app.displayMessages
   });
