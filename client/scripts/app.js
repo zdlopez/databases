@@ -2,19 +2,19 @@ var app = {};
 app.room = 'HackReactor';
 app.server = 'http://localhost:3000/';
 app.friends = [];
+app.rooms = {};
 
 app.init = function () {
-  app.rooms = this.getRooms();
   app.createDropDown(app.rooms);
-  this.fetch(app.room);
+  app.fetch(app.room);
   setInterval( function() {
     app.fetch(app.room);
+    app.rooms = app.getRooms();
     app.createDropDown(app.rooms);
   }, 500);
 };
 
 app.fetch = function (room) {
-  console.log("before the ajax fetch");
   $.ajax({
     url: app.server + 'classes/messages',
     type: 'GET',
@@ -23,17 +23,13 @@ app.fetch = function (room) {
       where: { "roomname": room }
     },
     success: function (data) {
-     // console.log("unparsed from server :", data);
-    //  var data = JSON.parse(data);
       app.messages = data;
-      console.log("data from fetch: ",data);
     },
     complete: app.displayMessages
   });
 };
 
 app.getRooms = function () {
-  var rooms = {};
   $.ajax({
     url: app.server + 'classes/messages',
     type: 'GET',
@@ -41,27 +37,23 @@ app.getRooms = function () {
       order: "-createdAt",
     },
     success: function (data) {
-      var data = JSON.parse(data);
-      return roomStorage(data.results);
+      return roomStorage(data);
     }
   });
 
   var roomStorage = function (data) {
 
-    for (var key in data) {
-      var roomName = app.escapeHtml(data[key]["roomName"]);
-
-      if (rooms[roomName] === undefined) {
-        rooms[roomName] = true;
+    for (var i = 0; i < data.length; i++) {
+      var roomName = app.escapeHtml(data[i]["roomName"]);
+      if (app.rooms[roomName] === undefined) {
+        app.rooms[roomName] = true;
       }
     }
   };
-
-  return rooms;
+  return app.rooms;
 };
 
 app.send = function (message) {
-  console.log("before ajax POST");
 
   $.ajax({
     url: app.server + 'classes/messages',
@@ -108,7 +100,6 @@ app.createDropDown = function (rooms) {
   for (var i = 0; i < roomNames.length; i++) {
     elements.push("<li><a href='#' class='roomName'>" + roomNames[i] + "</a></li>");
   }
-  //elements[0]
   $("#roomMenu").append(elements.join(''));
 };
 

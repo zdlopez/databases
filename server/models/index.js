@@ -47,10 +47,18 @@ var postMessage = function (data) {
 var getMessages = function(query,callback){
   console.log("query is : ",query);
   // =
-  var roomname = query.where.roomname;
-  var msgQuery = "select messages.createdAt, users.userName,  messages.text, rooms.roomName from messages inner join users on messages.fk_uID = users.uID inner join rooms on messages.fk_rmID = rooms.rmID where rooms.roomName='"+roomname+ "'";
+  //
+  var msgQuery;
+  if(query.where === undefined){
+    console.log("attempting to grab all roomnames");
+    msgQuery = "select messages.createdAt, users.userName,  messages.text, rooms.roomName from messages inner join users on messages.fk_uID = users.uID inner join rooms on messages.fk_rmID = rooms.rmID";
+  } else {
+    var roomname = query.where.roomname;
+    msgQuery = "select messages.createdAt, users.userName,  messages.text, rooms.roomName from messages inner join users on messages.fk_uID = users.uID inner join rooms on messages.fk_rmID = rooms.rmID where rooms.roomName='"+roomname+ "'";
+
+  }
   db.connection.query(msgQuery, function(err, rows){
-    console.log('returning from models');
+    // console.log('returning from models');
     callback(null, rows);
   });
 };
