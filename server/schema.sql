@@ -14,7 +14,7 @@ CREATE TABLE rooms (
 
 CREATE TABLE messages (
   mID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  createdAt char(24),
+  createdAt varchar(30),
   fk_uID INT,
   text varchar(200),
   fk_rmID INT,
