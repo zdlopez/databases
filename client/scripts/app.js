@@ -23,10 +23,10 @@ app.fetch = function (room) {
       where: { "roomname": room }
     },
     success: function (data) {
-      console.log("unparsed from server :", data);
-      var data = JSON.parse(data);
-      app.messages = data.results;
-      console.log(data);
+     // console.log("unparsed from server :", data);
+    //  var data = JSON.parse(data);
+      app.messages = data;
+      console.log("data from fetch: ",data);
     },
     complete: app.displayMessages
   });
@@ -49,7 +49,7 @@ app.getRooms = function () {
   var roomStorage = function (data) {
 
     for (var key in data) {
-      var roomName = app.escapeHtml(data[key]["roomname"]);
+      var roomName = app.escapeHtml(data[key]["roomName"]);
 
       if (rooms[roomName] === undefined) {
         rooms[roomName] = true;
@@ -86,11 +86,12 @@ app.displayMessages = function () {
   app.clearMessages();
   var element;
   for (var i = 0; i < app.messages.length; i++) {
-    if (app.messages[i]['username'] !== undefined) {
+    app.messages[i]['createdAt'] = JSON.parse(app.messages[i]['createdAt']);
+    if (app.messages[i]['userName'] !== undefined) {
       if (app.friends.indexOf(app.messages[i]['username']) > -1) {
-        element = "<li class='list-group-item friend'>" + "<strong class='username'>" + app.escapeHtml(app.messages[i]['username']) + "</strong>: " + app.escapeHtml(app.messages[i]['text']) + '<span class ="time">' + moment(app.messages[i]['createdAt']).fromNow() + "</span></li>";
+        element = "<li class='list-group-item friend'>" + "<strong class='username'>" + app.escapeHtml(app.messages[i]['userName']) + "</strong>: " + app.escapeHtml(app.messages[i]['text']) + '<span class ="time">' + moment(app.messages[i]['createdAt']).fromNow() + "</span></li>";
       } else {
-        element = "<li class='list-group-item'>" + "<strong class='username'>" + app.escapeHtml(app.messages[i]['username']) + "</strong>: " + app.escapeHtml(app.messages[i]['text']) + '<span class ="time">' + moment(app.messages[i]['createdAt']).fromNow() + "</span></li>";
+        element = "<li class='list-group-item'>" + "<strong class='username'>" + app.escapeHtml(app.messages[i]['userName']) + "</strong>: " + app.escapeHtml(app.messages[i]['text']) + '<span class ="time">' + moment(app.messages[i]['createdAt']).fromNow() + "</span></li>";
       }
     }
   $('ul#chats').prepend(element);

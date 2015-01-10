@@ -5,8 +5,8 @@ var fs = require('fs');
 
 module.exports = {
   messages: {
-    get: function (query) {
-      return getMessages(query);
+    get: function (query, callback) {
+      return getMessages(query, callback);
     }, // a function which produces all the messages
     post: function (data) {
       console.log("im in models post");
@@ -44,11 +44,13 @@ var postMessage = function (data) {
 
 };
 
-var getMessages = function(query){
+var getMessages = function(query,callback){
+  console.log("query is : ",query);
+  // =
   var roomname = query.where.roomname;
   var msgQuery = "select messages.createdAt, users.userName,  messages.text, rooms.roomName from messages inner join users on messages.fk_uID = users.uID inner join rooms on messages.fk_rmID = rooms.rmID where rooms.roomName='"+roomname+ "'";
   db.connection.query(msgQuery, function(err, rows){
-    //console.log(rows);
-    return rows;
+    console.log('returning from models');
+    callback(null, rows);
   });
 };
