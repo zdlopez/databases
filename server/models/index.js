@@ -1,5 +1,5 @@
 var db = require('../db');
-
+var fs = require('fs');
 
 
 
@@ -20,16 +20,22 @@ module.exports = {
 };
 
 var postMessage = function (data) {
-  var data = JSON.parse(data);
-  var username = data['username'];
-  var text = data['text'];
-  var roomname = data['roomname'] || 'lobby';
   var date = new Date();
-  messages[Object.keys(messages).length + 1] = {'createdAt' : date, 'username': username, 'text': text, 'roomname': roomname};
-
+  data['createdAt'] = date;
+  console.log(data);
+  // console.log(db);
   //replace with db.
+  //db.connection.query('insert into users (userName) values ("' + data.username+ '")',function(err, rows){
+//     if(err){console.log('your error is: '+err);
+//   }
+// });
+  db.connection.query("insert into users (userName) select * from (select '"+ data.username +"') as tmp where not exists (select userName from users where userName = '"+ data.username +"') limit 1", function(err, rows){
+    console.log(rows);
+  });
+
+
   console.log("before i write");
-  fs.writeFile('messages.txt', JSON.stringify(messages), 'utf8', function (err) {
+  fs.writeFile('messages.txt', JSON.stringify(data), 'utf8', function (err) {
     if (err) {
       console.log("did not write");
     } else {

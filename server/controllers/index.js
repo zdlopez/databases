@@ -8,18 +8,9 @@ module.exports = {
     get: function (req, res) {}, // a function which handles a get request for all messages
     post: function (req, res) {
       console.log("im in controllers/index.js");
-      var data = '';
-      req.on('data', function(chunk) {
-        data += chunk;
-        console.log("i'm chunking");
-        // next();
-      });
-      req.on('end', function() {
-        console.log(data);
-        models.messages.post(data);
-        res.writeHead(201);
-        res.end();
-      });
+      console.log(req.body);
+      models.messages.post(req.body);
+      res.send();
     } // a function which handles posting a message to the database
   },
 
