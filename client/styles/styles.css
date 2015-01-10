@@ -1,0 +1,16 @@
+.username {
+    cursor: pointer;
+}
+
+.table {
+    margin-top: 25px;
+}
+
+.friend {
+    color: red;
+}
+
+.time {
+    float: right;
+    font-size: 12px;
+}
